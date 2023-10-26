@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Button.module.css';
+import PropTypes from 'prop-types';
 
 export const Button = ({ onLoadMore }) => {
   return (
@@ -9,4 +10,8 @@ export const Button = ({ onLoadMore }) => {
       </button>
     </div>
   );
+};
+
+Button.propTypes = {
+  onLoadMore: PropTypes.func.isRequired, // Визначте проптайп для onLoadMore
 };

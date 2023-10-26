@@ -6,6 +6,7 @@ import Modal from './Modal/Modal';
 import { Button } from './Button/Button';
 // import { toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
+import PropTypes from 'prop-types';
 
 import Loader from './Loader/Loader';
 
@@ -107,3 +108,14 @@ export class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  images: PropTypes.array.isRequired,
+  query: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  showModal: PropTypes.bool.isRequired,
+  modalImage: PropTypes.string.isRequired,
+  totalHits: PropTypes.number,
+  previousQuery: PropTypes.string,
+};
