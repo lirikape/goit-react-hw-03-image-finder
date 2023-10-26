@@ -4,9 +4,7 @@ import Searchbar from './Searchbar/Searchbar';
 import React, { Component } from 'react';
 import Modal from './Modal/Modal';
 import { Button } from './Button/Button';
-// import { toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import Loader from './Loader/Loader';
 
@@ -19,7 +17,7 @@ export class App extends Component {
     showModal: false,
     modalImage: '',
     perPage: 12,
-    total: null,
+    totalHits: null,
     queryCounts: {},
     previousQueries: [],
   };
@@ -30,11 +28,18 @@ export class App extends Component {
       this.setState({ isLoading: true });
       try {
         const { hits, totalHits } = await fetchImages(query, page);
+        !hits.length && toast('Sorry, try other words');
+        !this.state.totalHits &&
+          hits.length &&
+          toast.success(
+            `Знайдено картинок за запитом: ${query} - ${totalHits}`
+          );
         this.setState(prevState => ({
           images: [...prevState.images, ...hits],
           totalHits,
         }));
-        console.log(hits);
+
+        // console.log(hits);
       } catch (error) {
         console.error('Помилка під час завантаження зображень:', error);
       } finally {
@@ -43,18 +48,20 @@ export class App extends Component {
     }
   }
 
-  // handleSetQuery = query => {
-  //   this.setState({ query, images: [], page: 1 });
-  // };
-
   handleSetQuery = query => {
     const { previousQuery } = this.state;
 
     if (query === previousQuery) {
-      // toast.error(`Ви вже виконали запит "${query}" двічі підряд.`);
-      alert(`Ви вже виконали запит "${query}" двічі підряд.`);
+      toast.error(`Ви вже виконали запит "${query}" двічі підряд.`);
+      // alert(`Ви вже виконали запит "${query}" двічі підряд.`);
     } else {
-      this.setState({ query, images: [], page: 1, previousQuery: query });
+      this.setState({
+        query,
+        images: [],
+        page: 1,
+        totalHits: 0,
+        previousQuery: query,
+      });
     }
   };
 
@@ -73,25 +80,12 @@ export class App extends Component {
     );
   };
 
-  // handleLoadMore = () => {
-  //   this.setState(prev => ({ page: prev.page + prev.perPage }));
-  // };
-
   render() {
-    const { query, images, modalImage, isLoading, showModal, totalHits } =
-      this.state;
+    const { images, modalImage, isLoading, showModal, totalHits } = this.state;
     return (
       <div>
         <Searchbar setQuery={this.handleSetQuery} />
-        <br />
-        <br />
-        <h2>
-          {images.length > 0
-            ? `Знайдено картинок за запитом: ${query} - ${totalHits}`
-            : totalHits === 0
-            ? 'Sorry, try other words'
-            : ''}
-        </h2>
+
         <ImageGallery
           images={this.state.images}
           onImageClick={this.handleImageClick}
@@ -108,14 +102,3 @@ export class App extends Component {
     );
   }
 }
-
-App.propTypes = {
-  images: PropTypes.array.isRequired,
-  query: PropTypes.string.isRequired,
-  page: PropTypes.number.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  modalImage: PropTypes.string.isRequired,
-  totalHits: PropTypes.number,
-  previousQuery: PropTypes.string,
-};
