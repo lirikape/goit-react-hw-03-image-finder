@@ -4,7 +4,7 @@ import Searchbar from './Searchbar/Searchbar';
 import React, { Component } from 'react';
 import Modal from './Modal/Modal';
 import { Button } from './Button/Button';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
 import Loader from './Loader/Loader';
